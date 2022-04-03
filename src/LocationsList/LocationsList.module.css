@@ -1,0 +1,11 @@
+.list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list {
+    list-style-type: none;
+    width: 40rem;
+}

@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useCallback, useEffect, useRef, useState } from "react";
+import LocationsList from "./LocationsList/LocationsList";
+import classes from "./App.module.css";
 
-function App() {
+const App = () => {
+  const [visibleLocations, setVisibleLocations] = useState([]);
+  const [visibleElementsNumber, setVisibleElementsNumber] = useState(0);
+  const [allLocations, setAllLocations] = useState([]);
+
+  const addLocations = useCallback(() => {
+    if (visibleElementsNumber < allLocations.length) {
+      setVisibleElementsNumber((prevState) => prevState + 3);
+      setVisibleLocations(allLocations.slice(0, visibleElementsNumber + 3));
+    }
+  }, [visibleElementsNumber, allLocations]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const locationsData = await axios.get(
+        "https://6246bd8e739ac8459191f7d5.mockapi.io/v2/confidence/locations"
+      );
+
+      const { data } = locationsData;
+      setVisibleLocations(data.locations.slice(0, 3));
+      setAllLocations(data.locations);
+
+      setVisibleElementsNumber(data.locations.slice(0, 3).length);
+    };
+
+    fetchLocations();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.container}>
+      <LocationsList visibleLocations={visibleLocations} />
+
+      <button onClick={addLocations}>Add</button>
     </div>
   );
-}
+};
 
 export default App;

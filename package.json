@@ -2,6 +2,7 @@
   "name": "locations-add",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://dev-api.confidence.org/v2/confidence",
   "dependencies": {
     "@carbon/icons-react": "^11.0.1",
     "@testing-library/jest-dom": "^5.16.3",

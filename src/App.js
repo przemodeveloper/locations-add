@@ -4,37 +4,39 @@ import LocationsList from "./LocationsList/LocationsList";
 import classes from "./App.module.css";
 
 const App = () => {
-  const [visibleLocations, setVisibleLocations] = useState([]);
-  const [visibleElementsNumber, setVisibleElementsNumber] = useState(0);
-  const [allLocations, setAllLocations] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [start, setStart] = useState(0);
 
-  const addLocations = useCallback(() => {
-    if (visibleElementsNumber < allLocations.length) {
-      setVisibleElementsNumber((prevState) => prevState + 3);
-      setVisibleLocations(allLocations.slice(0, visibleElementsNumber + 3));
-    }
-  }, [visibleElementsNumber, allLocations]);
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const locationsData = await axios.get(
-        "https://6246bd8e739ac8459191f7d5.mockapi.io/v2/confidence/locations"
-      );
-
-      const { data } = locationsData;
-      setVisibleLocations(data.locations.slice(0, 3));
-      setAllLocations(data.locations);
-
-      setVisibleElementsNumber(data.locations.slice(0, 3).length);
+  const fetchLocations = useCallback(async (start) => {
+    const headers = {
+      withCredentials: true,
+      username: "amitphatak$r5labs.com",
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache",
     };
 
-    fetchLocations();
+    const body = {
+      start,
+      limit: 3,
+    };
+
+    const locationsData = await axios.post("/locations", body, { headers });
+    const { data } = locationsData;
+
+    setLocations((prevState) => prevState.concat(data.locations));
   }, []);
+
+  const addLocations = () => {
+    setStart((prevState) => prevState + 3);
+  };
+
+  useEffect(() => {
+    fetchLocations(start);
+  }, [start, fetchLocations]);
 
   return (
     <div className={classes.container}>
-      <LocationsList visibleLocations={visibleLocations} />
-
+      <LocationsList visibleLocations={locations} />
       <button onClick={addLocations}>Add</button>
     </div>
   );

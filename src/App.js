@@ -1,43 +1,41 @@
-import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import LocationsList from "./LocationsList/LocationsList";
+import { useCallback, useEffect, useRef, useState } from "react";
+import LocationsList from "./components/LocationsList/LocationsList";
 import classes from "./App.module.css";
+import { ArrowDown } from "@carbon/icons-react";
+import useFetch from "./hooks/useFetch";
+import Loader from "./components/UI/Loader/Loader";
 
 const App = () => {
-  const [locations, setLocations] = useState([]);
   const [start, setStart] = useState(0);
+  const { loading, error, locations } = useFetch(start);
 
-  const fetchLocations = useCallback(async (start) => {
-    const headers = {
-      withCredentials: true,
-      username: "amitphatak$r5labs.com",
-      "Content-Type": "application/json",
-      "Cache-Control": "no-cache",
-    };
+  const arrowRef = useRef();
 
-    const body = {
-      start,
-      limit: 3,
-    };
-
-    const locationsData = await axios.post("/locations", body, { headers });
-    const { data } = locationsData;
-
-    setLocations((prevState) => prevState.concat(data.locations));
+  const handleObserver = useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setStart((prevState) => prevState + 3);
+    }
   }, []);
 
-  const addLocations = () => {
-    setStart((prevState) => prevState + 3);
-  };
-
   useEffect(() => {
-    fetchLocations(start);
-  }, [start, fetchLocations]);
+    const option = {
+      root: null,
+      rootMargin: "40px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (arrowRef.current) observer.observe(arrowRef.current);
+  }, [handleObserver]);
 
   return (
     <div className={classes.container}>
       <LocationsList visibleLocations={locations} />
-      <button onClick={addLocations}>Add</button>
+      <div ref={arrowRef}>
+        <ArrowDown size={32} />
+      </div>
+      {loading && <Loader />}
     </div>
   );
 };

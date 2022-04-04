@@ -1,4 +1,3 @@
-import { ArrowDown } from "@carbon/icons-react";
 import LocationItem from "../LocationItem/LocationItem";
 import classes from "./LocationsList.module.css";
 
@@ -17,7 +16,6 @@ const LocationsList = ({ visibleLocations }) => {
           );
         })}
       </ul>
-      <ArrowDown size={32} />
     </div>
   );
 };

@@ -19,13 +19,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: "40px",
-      threshold: 0,
-    };
-
-    const observer = new IntersectionObserver(handleObserver, option);
+    const observer = new IntersectionObserver(handleObserver);
     if (arrowRef.current) observer.observe(arrowRef.current);
   }, [handleObserver]);
 

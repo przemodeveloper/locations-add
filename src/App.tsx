@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import LocationsList from "./components/LocationsList/LocationsList";
-import classes from "./App.module.css";
-import { ArrowDown } from "@carbon/icons-react";
 import useFetch from "./hooks/useFetch";
 import Loader from "./components/UI/Loader/Loader";
+import classes from "./App.module.scss";
+import { FaArrowDown } from "react-icons/fa";
 
 const App = () => {
   const [start, setStart] = useState(0);
   const { loading, error, locations } = useFetch(start);
 
-  const arrowRef = useRef();
+  const arrowRef = useRef<HTMLDivElement>(null);
 
   const handleObserver = useCallback((entries) => {
     const target = entries[0];
@@ -19,8 +19,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    const current = arrowRef.current;
     const observer = new IntersectionObserver(handleObserver);
-    if (arrowRef.current) observer.observe(arrowRef.current);
+    if (current) observer.observe(current);
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
   }, [handleObserver]);
 
   return (
@@ -29,12 +34,12 @@ const App = () => {
         <div className={classes.container}>
           <LocationsList visibleLocations={locations} />
           <div ref={arrowRef}>
-            <ArrowDown size={32} />
+            <FaArrowDown />
           </div>
           {loading && <Loader />}
         </div>
       ) : (
-        <p>{error?.message}</p>
+        <p>{error}</p>
       )}
     </div>
   );

@@ -8,15 +8,15 @@ const headers = {
   "Cache-Control": "no-cache",
 };
 
-const useFetch = (start) => {
+const useFetch = (start: number) => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [locations, setLocations] = useState([]);
 
-  const fetchLocations = useCallback(async () => {
+  const fetchLocations = useCallback(async (start) => {
     try {
       setLoading(true);
-      setError(false);
+      setError("");
 
       const body = {
         start,
@@ -27,10 +27,11 @@ const useFetch = (start) => {
       const { data } = locationsData;
 
       setLocations((prevState) => prevState.concat(data.locations));
+      setLoading(false);
     } catch (error) {
-      setError(error);
+      if (error instanceof Error) setError(error.message);
     }
-  }, [start]);
+  }, []);
 
   useEffect(() => {
     fetchLocations(start);

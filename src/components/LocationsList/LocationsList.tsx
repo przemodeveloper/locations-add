@@ -1,11 +1,12 @@
 import LocationItem from "../LocationItem/LocationItem";
-import classes from "./LocationsList.module.css";
+import { LocationObject, Locations } from "../models";
+import classes from "./LocationsList.module.scss";
 
-const LocationsList = ({ visibleLocations }) => {
+const LocationsList = ({ visibleLocations }: Locations) => {
   return (
     <div className={classes["list-container"]}>
       <ul className={classes.list}>
-        {visibleLocations.map((location) => {
+        {visibleLocations.map((location: LocationObject) => {
           return (
             <LocationItem
               key={location.id}

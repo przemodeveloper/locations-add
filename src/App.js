@@ -30,12 +30,18 @@ const App = () => {
   }, [handleObserver]);
 
   return (
-    <div className={classes.container}>
-      <LocationsList visibleLocations={locations} />
-      <div ref={arrowRef}>
-        <ArrowDown size={32} />
-      </div>
-      {loading && <Loader />}
+    <div>
+      {!error ? (
+        <div className={classes.container}>
+          <LocationsList visibleLocations={locations} />
+          <div ref={arrowRef}>
+            <ArrowDown size={32} />
+          </div>
+          {loading && <Loader />}
+        </div>
+      ) : (
+        <p>{error?.message}</p>
+      )}
     </div>
   );
 };

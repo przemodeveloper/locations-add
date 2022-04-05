@@ -1,5 +1,5 @@
 import { LocationItemModel } from "../models";
-import classes from "./LocationItem.module.css";
+import classes from "./LocationItem.module.scss";
 
 const LocationItem = ({ details, type, address }: LocationItemModel) => {
   return (
